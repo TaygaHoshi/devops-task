@@ -19,6 +19,13 @@ RUN apt update -y && apt install -y mssql-server
 # run setup
 RUN /opt/mssql/bin/mssql-conf set-sa-password
 
-# expose the port and keep the container open
+# expose the port
 EXPOSE 1433
+
+# security
+RUN adduser dbuser --disabled-login
+WORKDIR /home/dbuser
+USER 1000:1000
+
+#  keep the container open
 ENTRYPOINT ["sleep", "infinity"]
