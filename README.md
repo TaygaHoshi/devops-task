@@ -8,7 +8,8 @@ cd devops-task
 chmod u+x ./launcher.sh
 ./launcher.sh
 
-# Then go to localhost:80/index.php
+# After the Docker containers are up, wait approximately 20 seconds for the MSSQL instance to initialize and then
+# go to http://localhost:80/index.php
 ```
 
 ## Changes in QuickDbTest.php
