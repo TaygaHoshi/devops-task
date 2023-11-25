@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  devopstask:
+    container_name: devopstask
+    image: devopstask-db:latest
+    ports:
+      - "1433:1433"
+    restart: unless-stopped

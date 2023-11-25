@@ -2,6 +2,7 @@
 FROM ubuntu:20.04
 
 # the password of the SA user will be this value
+ENV MSSQL_SA_PASSWORD "Un!q@to2023"
 ENV ACCEPT_EULA "Y"
 ENV SSQL_PID "Evaluation"
 
