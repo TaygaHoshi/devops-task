@@ -19,12 +19,19 @@ RUN /opt/mssql/bin/mssql-conf set-sa-password
 
 # security
 RUN adduser dbuser --disabled-login
-RUN chmod 777 /var/opt/mssql/log/errorlog && ln /var/opt/mssql/log/errorlog /home/dbuser/errorlog
+RUN chmod 744 /var/opt/mssql/log/errorlog && ln /var/opt/mssql/log/errorlog /home/dbuser/errorlog && \
+chown -R dbuser /opt/mssql /var/opt/mssql && chmod -R 744 /opt/mssql /var/opt/mssql
+
+RUN mkdir -p /.system && chown -R dbuser /.system && chmod -R 744 /.system && \
+mkdir -p /log && chown -R dbuser /log && chmod -R 744 /log
+
 WORKDIR /home/dbuser
 USER 1000:1000
 
 # expose the port
 EXPOSE 1433
 
+ENTRYPOINT ["/opt/mssql/bin/sqlservr"]
+
 #  show logs
-ENTRYPOINT ["tail", "-n","1000", "-F", "/home/dbuser/errorlog"]
+#ENTRYPOINT ["tail", "-n","1000", "-F", "/home/dbuser/errorlog"]
