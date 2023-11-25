@@ -10,7 +10,7 @@ final class QuickDbTest
 
     private function connectToDatabase() {
         try {
-            $dsn = "sqlsrv:server=".self::host.";Database=".self::db;
+            $dsn = "sqlsrv:server=".self::host.";Database=".self::db.";TrustServerCertificate=true";
             $connection = new PDO($dsn, self::user, self::pass);
             $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

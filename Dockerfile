@@ -1,37 +1,15 @@
-# get the base container
-FROM ubuntu:20.04
+FROM mcr.microsoft.com/mssql/server:2022-latest
 
-# the password of the SA user will be this value
+# environment variables
 ENV MSSQL_SA_PASSWORD "Un!q@to2023"
 ENV ACCEPT_EULA "Y"
-ENV SSQL_PID "Evaluation"
+ENV SSQL_PID "Developer"
+ENV DB_NAME "db_vero_digital"
 
-# install requirements
-RUN apt update -y && apt install -y gpg curl ca-certificates wget software-properties-common
-
-# installation of mssql. see: https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-ubuntu?view=sql-server-ver16&tabs=ubuntu2004
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc && \
-add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2022.list)"
-RUN apt update -y && apt install -y mssql-server
-
-# run setup
-RUN /opt/mssql/bin/mssql-conf set-sa-password
-
-# security
-RUN adduser dbuser --disabled-login
-RUN chmod 744 /var/opt/mssql/log/errorlog && ln /var/opt/mssql/log/errorlog /home/dbuser/errorlog && \
-chown -R dbuser /opt/mssql /var/opt/mssql && chmod -R 744 /opt/mssql /var/opt/mssql
-
-RUN mkdir -p /.system && chown -R dbuser /.system && chmod -R 744 /.system && \
-mkdir -p /log && chown -R dbuser /log && chmod -R 744 /log
-
-WORKDIR /home/dbuser
-USER 1000:1000
-
-# expose the port
 EXPOSE 1433
 
-ENTRYPOINT ["/opt/mssql/bin/sqlservr"]
+CMD /opt/mssql/bin/sqlservr & \
+sleep 20 && \
+echo -e "CREATE DATABASE $DB_NAME \n GO" | /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD
 
-#  show logs
-#ENTRYPOINT ["tail", "-n","1000", "-F", "/home/dbuser/errorlog"]
+ENTRYPOINT /opt/mssql/bin/sqlservr

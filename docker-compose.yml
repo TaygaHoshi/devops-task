@@ -2,8 +2,16 @@ version: "3"
 
 services:
   devopstask:
-    container_name: devopstask
+    container_name: devopstask-db
+    restart: unless-stopped
     image: devopstask-db:latest
     ports:
       - "1433:1433"
+  php-server:
+    container_name: devopstask-server
     restart: unless-stopped
+    image: devopstask-server:latest
+    network_mode: "host"
+    volumes:
+      - ./php_server/php.ini:/usr/local/etc/php/php.ini
+      - ./php_server/QuickDbTest.php:/app/index.php
